@@ -1,0 +1,39 @@
+{
+  "project": "adaptive-learning-platform",
+  "updated": "2026-09-06",
+  "test_suite": {"tests": 68, "passing": 68, "command": "pytest"},
+  "labels_legend": ["VALIDATED = executed and measured", "PROTOTYPE = implemented, not yet measured", "UNVALIDATED = untested claim", "DEFERRED = consciously not built yet"],
+  "milestones": {
+    "M1_audit_reproduce": {"status": "VALIDATED", "evidence": "29/29 pre-existing tests pass; e2e loop exercised via TestClient and live uvicorn"},
+    "M2_knowledge_tracing": {"status": "VALIDATED", "evidence": "10 models evaluated on ASSISTments 2009 variant under student-level split; leakage probes pass; best AUC 0.748 (GRU-KT); 0.90 target honestly unmet and explained", "report": "experiments/reports/phase-a-consolidated.md"},
+    "M3_student_state": {"status": "VALIDATED", "evidence": "alpa/core/state.py; schema-versioned JSON roundtrip exact; deterministic transition tested; mastery/uncertainty separation tested"},
+    "M4_concept_graph": {"status": "VALIDATED", "evidence": "alpa/core/graph.py; typed edges with provenance; unreviewed LLM edges excluded from traversal until reviewed; cycle detection; engine traverses via graph"},
+    "M5_adaptive_policy_info_gain": {"status": "VALIDATED", "evidence": "Fisher-information tie-break in item selection; uncertainty-resolution branch; two measured defects fixed (misconception over-firing, remediation loop) with regression tests"},
+    "M6_retention_spaced_retrieval": {"status": "VALIDATED", "evidence": "power-law retention + review scheduler in core/model.py; SPACED_REVIEW fires at R<0.60 (time-travel test); no wall-clock timestamps in ASSISTments variant => step-lag proxy only, labeled"},
+    "M7_content_ingestion": {"status": "VALIDATED", "evidence": "TXT/MD/PDF/DOCX/PPTX extraction tested against real generated files incl. hand-built PDF; segmentation; provenance-stamped concept AND edge proposals; LLM edges non-traversable until /api/edges/{id}/approve; malformed/garbled/ambiguous provider outputs rejected by validation without crashing the pipeline"},
+    "M8_llm_provider_abstraction": {"status": "VALIDATED", "evidence": "provider ABC + registry; deterministic TemplateProvider; HTTPChatProvider (OpenAI-compatible chat completions) validated over REAL TCP against a mock-compatible server: auth header, response_format negotiation, defensive JSON parsing, GenerationSpec embedded verbatim; UNVALIDATED against paid external endpoints (no keys in this environment)"},
+    "M9_end_to_end_sessions": {"status": "VALIDATED", "evidence": "full loop runs without manual intervention incl. provider-generated teaching content; robust grading: MCQ by choice, numerical by tolerance, short answer by normalized match, external/rubric grading rejected from the core model; scripts/demo_llm_session.py demonstrates the complete flow live"},
+    "M10_synthetic_evaluation": {"status": "VALIDATED", "evidence": "policy_eval.py: 4 policies x 7 planted profiles x 150 students; adaptive policy success 0.750 vs fixed 0.723, mastery parity; labeled NOT human evidence", "report": "experiments/reports/policy-eval-synthetic.json"},
+    "M11_api_persistence_traceability": {"status": "VALIDATED", "evidence": "all Phase O endpoints plus /graph, /state, /ingest, /concepts/{id}/approve; interventions/{id}/trace joins policy+prediction+outcome"},
+    "M12_testing_repro_docs": {"status": "VALIDATED", "evidence": "54 tests incl. leakage probes, determinism, serialization, approval gate, edge cases; experiment registry append-only; datasets hashed; seeds pinned"},
+    "M13_env_configured_free_provider": {"status": "VALIDATED", "evidence": "provider.register_from_env() registers an HTTPChatProvider from ALPA_LLM_BASE_URL/API_KEY/MODEL at app startup, tested (test_register_from_env_*); .env.example documents Groq/Google AI Studio/OpenRouter free tiers + local Ollama; /api/health reports live-provider status; UNVALIDATED against a real paid/free endpoint (no network egress or key in this environment) \u2014 same caveat as M8's HTTPChatProvider"},
+    "M14_general_frontend_prototype": {"status": "PROTOTYPE", "evidence": "web/index.html: student can paste/upload arbitrary material or type topics, ingest -> auto-approve concepts+edges -> adaptive session in one flow, mid-session 'teach it something new' re-ingestion, provider-status badge; smoke-tested end-to-end via TestClient (ingest, approve, diagnostic decision, progress); auto-approve-everything is a deliberate prototype shortcut that removes the human-review gate M4/M7 were built around \u2014 fine for a single trusted pilot user, wrong for multi-tenant/public use (see known_limitations)"}
+  },
+  "deferred": {
+    "paid_llm_endpoints": "HTTPChatProvider is wire-protocol validated against a mock OpenAI-compatible server; pointing it at a real paid endpoint requires an API key (env: base_url/api_key/model constructor args) and content-quality QA budget",
+    "irt_difficulty_refit": "item b remains priors; offline refit from attempts is queued (Phase A finding 1)",
+    "bandit_upgrade": "exploration logged since day one; gated on >=50-100k intervention records + off-policy evaluator",
+    "multi_kc_updates": "only primary concept updated per attempt",
+    "structured_rubric_items": "generated structured items are validated but kept out of the attempt pipeline: rubric/LLM grading must stay outside the core student model until separately instrumented and versioned",
+    "human_rct": "the primary question (does adaptation improve human learning) requires the pre-registered RCT; no offline metric substitutes"
+  },
+  "known_limitations": [
+    "SQLite default (Postgres later is a URL change)",
+    "non-MCQ generated items validated+graded at spec level but deferred from the attempt pipeline",
+    "ASSISTments variant lacks timestamps: retention analyses there are step-lag proxies only",
+    "synthetic results are algorithm checks, never human-learning evidence",
+    "frontend auto-approves all ingested concepts/edges with no human-review step \u2014 acceptable for a small trusted pilot (a few named students, one operator watching), not for public/self-serve signup: a bad or adversarial upload becomes teachable content immediately",
+    "single shared graph/course per DB: multiple students' uploaded material all lands in one concept graph; there is no per-student or per-class content namespace yet",
+    "free-tier LLM endpoints (Groq/Gemini/OpenRouter/Ollama) are wired via the existing OpenAI-compatible HTTPChatProvider but not live-tested against a real key in this environment \u2014 test locally before a pilot session"
+  ]
+}

@@ -1,0 +1,26 @@
+[project]
+name = "alpa"
+version = "0.2.0"
+description = "Adaptive Learning Platform — ML core (Phase 2). ML owns adaptation; LLMs are not coupled."
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "sqlalchemy>=2",
+    "pydantic>=2",
+    "numpy",
+    "httpx",
+    "pypdf",
+    "python-docx",
+    "python-pptx",
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["alpa*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

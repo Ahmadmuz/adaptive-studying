@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adaptive Study Platform</title>
+<style>
+  :root { --ink:#1c2430; --mut:#68788c; --acc:#2563eb; --ok:#15803d; --bad:#b91c1c; --bg:#f4f6f9; --warn:#92400e; }
+  * { box-sizing: border-box; }
+  body { margin:0; font:15px/1.5 system-ui, sans-serif; background:var(--bg); color:var(--ink); }
+  header { background:#fff; border-bottom:1px solid #e3e8ef; padding:12px 20px; display:flex; gap:12px; align-items:center; }
+  header h1 { font-size:16px; margin:0; } header .tag { font-size:12px; color:var(--mut); }
+  .prov { margin-left:auto; font-size:12px; padding:3px 10px; border-radius:999px; background:#e2e8f0; color:#334155; }
+  .prov.live { background:#dcfce7; color:var(--ok); }
+  main { display:grid; grid-template-columns: 1fr 320px; gap:16px; padding:20px; max-width:1100px; margin:0 auto; }
+  @media (max-width:860px){ main { grid-template-columns:1fr; } }
+  .card { background:#fff; border:1px solid #e3e8ef; border-radius:10px; padding:20px; }
+  button { font:inherit; padding:8px 16px; border-radius:8px; border:1px solid #cbd5e1; background:#fff; cursor:pointer; }
+  button.primary { background:var(--acc); border-color:var(--acc); color:#fff; }
+  button.ghost { background:transparent; border-color:transparent; color:var(--acc); padding:4px 0; }
+  .choice { display:block; width:100%; text-align:left; margin:6px 0; padding:10px 14px; }
+  .choice:hover { border-color:var(--acc); }
+  .choice.correct { border-color:var(--ok); background:#f0fdf4; }
+  .choice.wrong { border-color:var(--bad); background:#fef2f2; }
+  .muted { color:var(--mut); font-size:13px; }
+  .badge { display:inline-block; font-size:12px; padding:2px 8px; border-radius:999px; background:#e2e8f0; color:#334155; margin-left:8px; }
+  .badge.explore { background:#fef3c7; color:var(--warn); }
+  .stem { font-size:17px; font-weight:600; margin-bottom:12px; }
+  .feedback { margin-top:12px; padding:10px 12px; border-radius:8px; }
+  .feedback.ok { background:#f0fdf4; color:var(--ok); } .feedback.bad { background:#fef2f2; color:var(--bad); }
+  .concept { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid #eef2f6; font-size:13px; }
+  .bar { height:6px; background:#e2e8f0; border-radius:3px; overflow:hidden; margin-top:3px; }
+  .bar > div { height:100%; background:var(--acc); }
+  .bar > div.mastered { background:var(--ok); }
+  input, textarea { font:inherit; padding:8px 12px; border:1px solid #cbd5e1; border-radius:8px; width:100%; }
+  textarea { min-height:120px; resize:vertical; }
+  .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .field { margin:12px 0; }
+  .field label { display:block; font-size:12px; color:var(--mut); margin-bottom:4px; }
+  .meta { font-size:12px; color:var(--mut); margin-top:14px; }
+  .meta code { background:#f1f5f9; padding:1px 4px; border-radius:4px; }
+  .ingest-report { background:#f8fafc; border:1px solid #e3e8ef; border-radius:8px; padding:12px; margin-top:10px; font-size:13px; }
+  .ingest-report .warn { color:var(--warn); }
+  .spinner { display:inline-block; width:14px; height:14px; border:2px solid #cbd5e1; border-top-color:var(--acc); border-radius:50%; animation:spin .7s linear infinite; vertical-align:-2px; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .divider { text-align:center; color:var(--mut); font-size:12px; margin:14px 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Adaptive Study Platform</h1>
+  <span class="tag">diagnoses what you know, adapts what's next</span>
+  <span class="prov" id="provBadge">checking provider…</span>
+</header>
+<main>
+  <section class="card" id="stage">
+    <div class="stem">Welcome</div>
+    <p class="muted">Bring anything you're trying to learn — lecture notes, a textbook
+      chapter, a slide deck, or just a topic list. The system builds a concept map
+      from it, figures out what you already know, and picks what to show you next.
+      It only reuses an idea from stored knowledge (not just the last message) to decide —
+      every decision is logged and explainable.</p>
+    <div class="field">
+      <label>Your name</label>
+      <input id="name" placeholder="Your name" value="student">
+    </div>
+    <div class="field">
+      <label>Paste material to study (optional — skip to use the default seed course)</label>
+      <textarea id="material" placeholder="Paste notes, a chapter, a topic list…"></textarea>
+    </div>
+    <div class="row">
+      <input type="file" id="file" accept=".txt,.md,.pdf,.docx,.pptx">
+      <span class="muted">or upload a file (.txt .md .pdf .docx .pptx)</span>
+    </div>
+    <div class="divider">— OR —</div>
+    <div class="field">
+      <label>Just tell it what you want to learn (one topic per line, no material needed)</label>
+      <textarea id="topics" placeholder="e.g.&#10;Newton's second law&#10;Free body diagrams"></textarea>
+    </div>
+    <p><button class="primary" id="startBtn" onclick="start()">Start studying</button></p>
+    <div id="ingestReport"></div>
+  </section>
+  <aside class="card" id="progress"><div class="muted">Progress will appear here.</div></aside>
+</main>
+<script>
+let USER=null, SESSION=null, CURRENT=null, t0=0;
+const $=id=>document.getElementById(id);
+async function api(path, opts){ const r=await fetch(path, opts); if(!r.ok) throw new Error(await r.text()); return r.json(); }
+
+(async function checkProvider(){
+  try{
+    const h = await api("/api/health");
+    const b = $("provBadge");
+    b.textContent = h.llm_coupled ? `live LLM: ${h.content_provider}` : "offline template content";
+    b.classList.toggle("live", h.llm_coupled);
+  }catch(e){ /* backend not reachable yet */ }
+})();
+
+function fileToB64(file){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();
+    r.onload=()=>res(r.result.split(",")[1]);
+    r.onerror=()=>rej(r.error);
+    r.readAsDataURL(file);
+  });
+}
+
+async function ingestMaterial(){
+  const text = $("material").value.trim();
+  const topicsRaw = $("topics").value.trim();
+  const file = $("file").files[0];
+  let body = null;
+  if (file){
+    body = {b64: await fileToB64(file), filename: file.name};
+  } else if (text){
+    body = {text, source:"pasted"};
+  } else if (topicsRaw){
+    body = {topics: topicsRaw.split("\n")};
+  }
+  if (!body) return null;
+  const report = await api("/api/ingest", {method:"POST",
+    headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)});
+  // Prototype mode: auto-approve everything just extracted so the student can
+  // study it immediately, instead of sitting in a human-review queue.
+  for (const c of report.concepts) await api(`/api/concepts/${c.id}/approve`, {method:"POST"});
+  const graph = await api("/api/graph?include_unreviewed_llm=true");
+  for (const e of graph.edges) if (!e.human_reviewed) await api(`/api/edges/${e.id}/approve`, {method:"POST"});
+  return report;
+}
+
+function renderIngestReport(report){
+  if (!report){ $("ingestReport").innerHTML = ""; return; }
+  const rejected = report.questions_rejected?.length || 0;
+  const deferred = report.items_deferred?.length || 0;
+  $("ingestReport").innerHTML = `<div class="ingest-report">
+    Learned <b>${report.concepts.length}</b> concept${report.concepts.length===1?"":"s"}
+    and <b>${report.items_added.length}</b> practice question${report.items_added.length===1?"":"s"}
+    from your material${report.edges_added?`, plus ${report.edges_added} relationship${report.edges_added===1?"":"s"} between them`:""}.
+    ${(rejected||deferred)?`<div class="warn">${rejected} item(s) skipped for grading ambiguity, ${deferred} deferred (need rubric grading).</div>`:""}
+  </div>`;
+}
+
+async function start(){
+  const btn = $("startBtn");
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> setting up…';
+  try{
+    const report = await ingestMaterial();
+    renderIngestReport(report);
+    USER = await api("/api/users", {method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({name: $("name").value || "student"})});
+    SESSION = await api(`/api/users/${USER.id}/sessions`, {method:"POST"});
+    refreshProgress();
+    next();
+  } finally {
+    btn.disabled = false; btn.textContent = "Start studying";
+  }
+}
+
+async function next(){
+  CURRENT = await api(`/api/sessions/${SESSION.id}/next`);
+  render();
+}
+
+function render(){
+  const d=CURRENT, stage=$("stage");
+  t0=performance.now();
+  let html=`<div class="stem">${d.intervention}<span class="badge${d.exploration?" explore":""}">${d.exploration?"exploration":"policy"}</span></div>`;
+  if(d.concept) html+=`<div class="muted">Concept: ${d.concept}</div>`;
+  const item=d.payload?.item;
+  if(item){
+    html+=`<p class="stem" style="margin-top:12px">${item.stem}</p>`;
+    const t = item.item_type || "multiple_choice";
+    if(t === "multiple_choice"){
+      item.choices.forEach((c,i)=>{ html+=`<button class="choice" id="ch${i}" onclick="answer(${i})">${c}</button>`; });
+    } else {
+      html+=`<input id="resp" placeholder="${t==="numerical"?"Numeric answer":"Your answer"}" style="width:100%;margin:6px 0">
+        <button class="primary" onclick="answerText()">Submit</button>`;
+    }
+    html+=`<div id="fb"></div>`;
+  } else if(d.intervention==="SESSION_WRAP"){
+    html+=`<p>${d.payload.note||"Session complete."}</p>
+      <button class="primary" onclick="refreshProgress()">See progress</button>
+      <button class="ghost" onclick="teachMore()">Teach it something new →</button>`;
+  } else {
+    // teach actions: content generated by the configured provider from the
+    // ML engine's GenerationSpec (LLM decides HOW, never WHAT).
+    const gc = d.payload.generated_content;
+    html+=`<p>${d.payload.note||""}</p>
+      <div class="feedback" style="background:#f8fafc">
+        ${gc ? gc : `<b>Stub teaching content (no live provider configured — see .env.example)</b>`}<br>
+        <span class="muted">Concept: <code>${d.concept||"-"}</code> · Intervention:
+        <code>${d.intervention}</code>${d.payload.content_provider?` · provider:
+        <code>${d.payload.content_provider}</code>`:""}</span>
+      </div>
+      <p><button class="primary" onclick="next()">Continue → practice</button></p>`;
+  }
+  html+=`<div class="meta">decision #${d.intervention_id} · rationale <code>${d.rationale}</code>`
+      + (d.p_correct!=null?` · predicted P(correct)=${d.p_correct.toFixed(2)} · σ=${(d.uncertainty||0).toFixed(2)}`:"")
+      + ` · <a href="/api/interventions/${d.intervention_id}/trace" target="_blank">trace</a></div>`;
+  stage.innerHTML=html;
+}
+
+function teachMore(){
+  $("stage").innerHTML = `<div class="stem">Add more material</div>
+    <div class="field"><label>Paste more notes / a new chapter</label><textarea id="material2"></textarea></div>
+    <div class="row"><input type="file" id="file2" accept=".txt,.md,.pdf,.docx,.pptx"><span class="muted">or upload a file</span></div>
+    <p><button class="primary" onclick="submitMore()">Add it in</button>
+    <button class="ghost" onclick="next()">Skip, keep going</button></p>
+    <div id="ingestReport2"></div>`;
+}
+async function submitMore(){
+  const text=$("material2").value.trim(), file=$("file2").files[0];
+  let body=null;
+  if(file) body={b64: await fileToB64(file), filename:file.name};
+  else if(text) body={text, source:"pasted"};
+  if(!body){ next(); return; }
+  const report = await api("/api/ingest", {method:"POST",
+    headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)});
+  for (const c of report.concepts) await api(`/api/concepts/${c.id}/approve`, {method:"POST"});
+  const graph = await api("/api/graph?include_unreviewed_llm=true");
+  for (const e of graph.edges) if (!e.human_reviewed) await api(`/api/edges/${e.id}/approve`, {method:"POST"});
+  $("ingestReport2").innerHTML = `<div class="ingest-report">Added ${report.concepts.length} concept(s), ${report.items_added.length} question(s).</div>`;
+  setTimeout(next, 900);
+}
+
+async function answer(i){ submitResponse({choice_index:i}); }
+async function answerText(){ submitResponse({response_text: $("resp").value}); }
+async function submitResponse(extra){
+  const latency=performance.now()-t0;
+  const res=await api(`/api/sessions/${SESSION.id}/attempts`, {method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({intervention_id:CURRENT.intervention_id, item_id:CURRENT.payload.item.item_id,
+      latency_ms:Math.round(latency), ...extra})});
+  document.querySelectorAll(".choice").forEach((b,j)=>{
+    b.disabled=true;
+    if(j===res.correct_index) b.classList.add("correct");
+    else if(j===extra.choice_index) b.classList.add("wrong");
+  });
+  const m=res.mastery_after;
+  $("fb").innerHTML=`<div class="feedback ${res.correct?"ok":"bad"}">${res.correct?"Correct.":"Incorrect."}
+    P(mastery) ${(m.p_mastery*100).toFixed(0)}%${m.mastered?" — mastered ✓":""}</div>
+    <p><button class="primary" onclick="next()">Next →</button></p>`;
+  refreshProgress();
+}
+
+async function refreshProgress(){
+  if(!USER) return;
+  const p=await api(`/api/users/${USER.id}/progress`);
+  let html=`<div class="stem" style="font-size:14px">${p.course}</div>
+    <div class="muted">${p.mastered}/${p.total_concepts} mastered · ${p.total_attempts} attempts</div>`;
+  for(const c of p.concepts){
+    html+=`<div class="concept"><span>${c.title}${c.mastered?" ✓":""}</span><span>${Math.round(c.p_mastery*100)}%</span></div>
+      <div class="bar"><div class="${c.mastered?"mastered":""}" style="width:${Math.round(c.p_mastery*100)}%"></div></div>`;
+  }
+  $("progress").innerHTML=html;
+}
+</script>
+</body>
+</html>

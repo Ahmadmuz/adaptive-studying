@@ -1,0 +1,472 @@
+{
+ "random": {
+  "fast": {
+   "success": 0.5382222222222223,
+   "mastered": 0.3933333333333333,
+   "uncertainty": 2.765404171209089,
+   "coverage": 13.846666666666666,
+   "difficulty_first": 0.15326666666666663,
+   "difficulty_second": 0.1528,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "Q_MED": 9000
+   }
+  },
+  "slow": {
+   "success": 0.48333333333333334,
+   "mastered": 0.08,
+   "uncertainty": 2.7636816283920735,
+   "coverage": 13.8,
+   "difficulty_first": 0.16348888888888888,
+   "difficulty_second": 0.14795555555555556,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "Q_MED": 9000
+   }
+  },
+  "high_prior": {
+   "success": 0.7836666666666666,
+   "mastered": 1.1266666666666667,
+   "uncertainty": 2.7499223923432896,
+   "coverage": 13.82,
+   "difficulty_first": 0.14902222222222225,
+   "difficulty_second": 0.1508222222222222,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "Q_MED": 9000
+   }
+  },
+  "low_prior": {
+   "success": 0.23444444444444448,
+   "mastered": 0.006666666666666667,
+   "uncertainty": 2.8056818473437,
+   "coverage": 13.846666666666666,
+   "difficulty_first": 0.15471111111111113,
+   "difficulty_second": 0.16560000000000002,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "Q_MED": 9000
+   }
+  },
+  "forgetting": {
+   "success": 0.29388888888888887,
+   "mastered": 0.02666666666666667,
+   "uncertainty": 2.7997747658470487,
+   "coverage": 13.793333333333333,
+   "difficulty_first": 0.15473333333333333,
+   "difficulty_second": 0.16213333333333332,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "Q_MED": 9000
+   }
+  },
+  "inconsistent": {
+   "success": 0.5251111111111112,
+   "mastered": 0.2,
+   "uncertainty": 2.769189394144376,
+   "coverage": 13.773333333333333,
+   "difficulty_first": 0.15962222222222222,
+   "difficulty_second": 0.15784444444444443,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "Q_MED": 9000
+   }
+  },
+  "weak_concepts": {
+   "success": 0.4590000000000001,
+   "mastered": 0.16,
+   "uncertainty": 2.7694035938853334,
+   "coverage": 13.866666666666667,
+   "difficulty_first": 0.16246666666666668,
+   "difficulty_second": 0.1660888888888889,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0724888888888889,
+   "interventions": {
+    "Q_MED": 9000
+   }
+  }
+ },
+ "fixed": {
+  "fast": {
+   "success": 0.7445555555555555,
+   "mastered": 4.06,
+   "uncertainty": 3.2281153965811504,
+   "coverage": 5.0,
+   "difficulty_first": 0.10942222222222223,
+   "difficulty_second": 0.2216444444444445,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "Q_MED": 9000
+   }
+  },
+  "slow": {
+   "success": 0.7063333333333335,
+   "mastered": 1.9266666666666667,
+   "uncertainty": 3.4239101916589947,
+   "coverage": 2.8666666666666667,
+   "difficulty_first": -0.1370666666666667,
+   "difficulty_second": -0.09746666666666667,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "Q_MED": 9000
+   }
+  },
+  "high_prior": {
+   "success": 0.8369999999999999,
+   "mastered": 5.96,
+   "uncertainty": 3.0686641439187308,
+   "coverage": 6.873333333333333,
+   "difficulty_first": 0.3375333333333334,
+   "difficulty_second": 0.40657777777777776,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "Q_MED": 9000
+   }
+  },
+  "low_prior": {
+   "success": 0.6235555555555555,
+   "mastered": 1.3466666666666667,
+   "uncertainty": 3.480091538914674,
+   "coverage": 2.34,
+   "difficulty_first": -0.5170888888888889,
+   "difficulty_second": -0.5076888888888889,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "Q_MED": 9000
+   }
+  },
+  "forgetting": {
+   "success": 0.7108888888888889,
+   "mastered": 2.86,
+   "uncertainty": 3.330070448237548,
+   "coverage": 3.8333333333333335,
+   "difficulty_first": -0.03862222222222221,
+   "difficulty_second": 0.01602222222222223,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "Q_MED": 9000
+   }
+  },
+  "inconsistent": {
+   "success": 0.7284444444444446,
+   "mastered": 3.1866666666666665,
+   "uncertainty": 3.300537839965933,
+   "coverage": 4.14,
+   "difficulty_first": 0.08851111111111111,
+   "difficulty_second": 0.1501777777777778,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "Q_MED": 9000
+   }
+  },
+  "weak_concepts": {
+   "success": 0.7096666666666666,
+   "mastered": 2.6933333333333334,
+   "uncertainty": 3.3514462761260675,
+   "coverage": 3.6266666666666665,
+   "difficulty_first": -0.07039999999999999,
+   "difficulty_second": 0.002644444444444453,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 1.0991555555555554,
+   "interventions": {
+    "Q_MED": 9000
+   }
+  }
+ },
+ "rules_no_gain": {
+  "fast": {
+   "success": 0.7929506490367334,
+   "mastered": 3.973333333333333,
+   "uncertainty": 3.2688394548349167,
+   "coverage": 4.773333333333333,
+   "difficulty_first": 0.20509545792371878,
+   "difficulty_second": 0.37390392351609747,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "EXPLAIN": 732,
+    "EXAMPLE": 725,
+    "Q_MED": 5588,
+    "Q_EASY": 1432,
+    "Q_HARD": 247,
+    "SESSION_WRAP": 169,
+    "SIMPLIFY": 70,
+    "BREAK_TASK": 37
+   }
+  },
+  "slow": {
+   "success": 0.709958261113401,
+   "mastered": 1.6266666666666667,
+   "uncertainty": 3.4598378661652216,
+   "coverage": 2.546666666666667,
+   "difficulty_first": -0.0709278537511871,
+   "difficulty_second": -0.057532678062678075,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "EXPLAIN": 389,
+    "EXAMPLE": 387,
+    "Q_MED": 6739,
+    "Q_EASY": 911,
+    "SESSION_WRAP": 288,
+    "SIMPLIFY": 134,
+    "Q_HARD": 90,
+    "BREAK_TASK": 62
+   }
+  },
+  "high_prior": {
+   "success": 0.8692338775719971,
+   "mastered": 5.18,
+   "uncertainty": 3.1918531496817817,
+   "coverage": 5.88,
+   "difficulty_first": 0.2950641125541126,
+   "difficulty_second": 0.4709784233640755,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "EXPLAIN": 911,
+    "EXAMPLE": 900,
+    "Q_MED": 5400,
+    "Q_HARD": 584,
+    "SESSION_WRAP": 152,
+    "Q_EASY": 1043,
+    "SIMPLIFY": 4,
+    "BREAK_TASK": 6
+   }
+  },
+  "low_prior": {
+   "success": 0.6564133557740163,
+   "mastered": 1.3533333333333333,
+   "uncertainty": 3.4926560897343113,
+   "coverage": 2.2866666666666666,
+   "difficulty_first": -0.409346438843276,
+   "difficulty_second": -0.36692236902657194,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "EXPLAIN": 349,
+    "EXAMPLE": 346,
+    "Q_MED": 5412,
+    "Q_EASY": 2021,
+    "SIMPLIFY": 403,
+    "SESSION_WRAP": 232,
+    "BREAK_TASK": 212,
+    "Q_HARD": 25
+   }
+  },
+  "forgetting": {
+   "success": 0.7247748389937111,
+   "mastered": 2.6533333333333333,
+   "uncertainty": 3.36869212844238,
+   "coverage": 3.54,
+   "difficulty_first": 0.036843302591128675,
+   "difficulty_second": 0.11622464552623973,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "EXPLAIN": 542,
+    "EXAMPLE": 535,
+    "Q_MED": 5676,
+    "Q_EASY": 1718,
+    "SIMPLIFY": 161,
+    "SESSION_WRAP": 218,
+    "Q_HARD": 68,
+    "BREAK_TASK": 82
+   }
+  },
+  "inconsistent": {
+   "success": 0.7527343427205397,
+   "mastered": 3.066666666666667,
+   "uncertainty": 3.3371665128700037,
+   "coverage": 3.9,
+   "difficulty_first": 0.169017846356542,
+   "difficulty_second": 0.24999975102192498,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "EXPLAIN": 602,
+    "EXAMPLE": 596,
+    "Q_MED": 5982,
+    "Q_EASY": 1281,
+    "SESSION_WRAP": 218,
+    "SIMPLIFY": 105,
+    "BREAK_TASK": 30,
+    "Q_HARD": 186
+   }
+  },
+  "weak_concepts": {
+   "success": 0.738720007805991,
+   "mastered": 2.68,
+   "uncertainty": 3.3662993304546434,
+   "coverage": 3.58,
+   "difficulty_first": 0.017058637020521083,
+   "difficulty_second": 0.13971609686609687,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 1.0155432291666664,
+   "interventions": {
+    "EXPLAIN": 549,
+    "EXAMPLE": 545,
+    "Q_MED": 5902,
+    "Q_EASY": 1446,
+    "SIMPLIFY": 144,
+    "SESSION_WRAP": 222,
+    "Q_HARD": 130,
+    "BREAK_TASK": 62
+   }
+  }
+ },
+ "rules_full": {
+  "fast": {
+   "success": 0.7983984894728783,
+   "mastered": 4.18,
+   "uncertainty": 3.259063431583722,
+   "coverage": 4.926666666666667,
+   "difficulty_first": 0.2161538383838384,
+   "difficulty_second": 0.36636705314009665,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "EXPLAIN": 764,
+    "EXAMPLE": 752,
+    "Q_MED": 5807,
+    "Q_EASY": 1378,
+    "Q_HARD": 20,
+    "SESSION_WRAP": 161,
+    "SIMPLIFY": 89,
+    "BREAK_TASK": 29
+   }
+  },
+  "slow": {
+   "success": 0.7107814596117893,
+   "mastered": 1.76,
+   "uncertainty": 3.452355512031442,
+   "coverage": 2.6466666666666665,
+   "difficulty_first": -0.03999216111317561,
+   "difficulty_second": -0.0267410636277303,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "EXPLAIN": 403,
+    "EXAMPLE": 400,
+    "Q_MED": 6817,
+    "Q_EASY": 914,
+    "SIMPLIFY": 116,
+    "BREAK_TASK": 47,
+    "SESSION_WRAP": 288,
+    "Q_HARD": 15
+   }
+  },
+  "high_prior": {
+   "success": 0.8655419773814454,
+   "mastered": 5.14,
+   "uncertainty": 3.1888592950082177,
+   "coverage": 5.906666666666666,
+   "difficulty_first": 0.28536191668235145,
+   "difficulty_second": 0.4821323407992973,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "EXPLAIN": 908,
+    "EXAMPLE": 900,
+    "Q_MED": 6057,
+    "Q_HARD": 34,
+    "SESSION_WRAP": 153,
+    "Q_EASY": 937,
+    "BREAK_TASK": 5,
+    "SIMPLIFY": 6
+   }
+  },
+  "low_prior": {
+   "success": 0.65655088895131,
+   "mastered": 1.4466666666666668,
+   "uncertainty": 3.4826445022588373,
+   "coverage": 2.4066666666666667,
+   "difficulty_first": -0.29651837380011287,
+   "difficulty_second": -0.3237353020141426,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "EXPLAIN": 366,
+    "EXAMPLE": 362,
+    "Q_MED": 5502,
+    "Q_EASY": 1913,
+    "SESSION_WRAP": 225,
+    "SIMPLIFY": 413,
+    "BREAK_TASK": 209,
+    "Q_HARD": 10
+   }
+  },
+  "forgetting": {
+   "success": 0.7290309500535905,
+   "mastered": 2.7933333333333334,
+   "uncertainty": 3.3643883903626386,
+   "coverage": 3.6266666666666665,
+   "difficulty_first": 0.052558952062430324,
+   "difficulty_second": 0.1286813266443701,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "EXPLAIN": 560,
+    "EXAMPLE": 553,
+    "Q_MED": 5797,
+    "Q_EASY": 1646,
+    "SESSION_WRAP": 219,
+    "SIMPLIFY": 141,
+    "BREAK_TASK": 77,
+    "Q_HARD": 7
+   }
+  },
+  "inconsistent": {
+   "success": 0.7555736692203705,
+   "mastered": 3.12,
+   "uncertainty": 3.3372603119912925,
+   "coverage": 3.933333333333333,
+   "difficulty_first": 0.14742697780480388,
+   "difficulty_second": 0.28100457822370867,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 0.0,
+   "interventions": {
+    "EXPLAIN": 607,
+    "EXAMPLE": 602,
+    "Q_MED": 6237,
+    "Q_EASY": 1190,
+    "SIMPLIFY": 92,
+    "BREAK_TASK": 35,
+    "SESSION_WRAP": 224,
+    "Q_HARD": 13
+   }
+  },
+  "weak_concepts": {
+   "success": 0.7347686088957786,
+   "mastered": 2.66,
+   "uncertainty": 3.3767538524795397,
+   "coverage": 3.48,
+   "difficulty_first": 0.04945004459308807,
+   "difficulty_second": 0.10086894628184483,
+   "reviews_delivered": 0.0,
+   "prereq_recovery": 1.098572829861111,
+   "interventions": {
+    "EXPLAIN": 535,
+    "EXAMPLE": 528,
+    "Q_MED": 6145,
+    "Q_EASY": 1347,
+    "SIMPLIFY": 148,
+    "SESSION_WRAP": 235,
+    "BREAK_TASK": 51,
+    "Q_HARD": 11
+   }
+  }
+ }
+}
