@@ -36,7 +36,7 @@ class Loop:
         if dec["intervention"] == "SESSION_WRAP":
             self.session = self.client.post(f"/api/users/{self.user_id}/sessions").json()
             return None
-        if dec["intervention"] in ("EXPLAIN", "EXAMPLE"):
+        if dec["intervention"] in ("EXPLAIN", "EXAMPLE", "SUMMARY", "MINI_LESSON"):
             self.teach_seen.append(dec)
             return None  # teaching actions have no attempt (LLM hook, Phase 5)
         item = dec["payload"].get("item")

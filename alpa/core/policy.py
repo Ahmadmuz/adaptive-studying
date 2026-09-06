@@ -16,6 +16,7 @@ from . import model
 from .types import (
     EXPLAIN, EXAMPLE, Q_EASY, Q_MED, Q_HARD, SPACED_REVIEW, HINT,
     SIMPLIFY, BREAK_TASK, REVISIT_PREREQUISITE, SESSION_WRAP,
+    FLASHCARD, RETRIEVAL_PRACTICE, SUMMARY, MINI_LESSON,
     AttemptRecord, ConceptSnapshot, Decision, GlobalParams, ItemSpec,
 )
 
@@ -222,18 +223,22 @@ def decide(ctx: PolicyContext) -> Decision:
                                 f"info_gain:resolve_mastery:p_m={p_m:.2f}")
 
     # 2d. unseen concept -> teach before testing (worked-example superiority for novices)
-    if snap.exposure == 0 and shown < 2:
-        action = EXPLAIN if shown == 0 else EXAMPLE
+    # Rotate through EXPLAIN, EXAMPLE, SUMMARY, MINI_LESSON for variety
+    if snap.exposure == 0 and shown < 4:
+        teach_sequence = [EXPLAIN, EXAMPLE, SUMMARY, MINI_LESSON]
+        action = teach_sequence[shown % len(teach_sequence)]
         return Decision(action, cid, None, None, f"teach:{action.lower()}",
                         payload={"note": "LLM generation hook (Phase 5).",
                                  "content_spec": {"concept": snap.code, "intervention": action}})
 
     # 2e. difficulty bands on representative P(correct)
     rep_p, _ = _rep_p(ctx, cid, snap)
-    if rep_p < 0.25 and shown < 2:
-        action = EXPLAIN if shown == 0 else EXAMPLE
+    if rep_p < 0.25 and shown < 4:
+        teach_sequence = [EXPLAIN, EXAMPLE, SUMMARY, MINI_LESSON]
+        action = teach_sequence[shown % len(teach_sequence)]
         return Decision(action, cid, None, None, f"teach:low_p:{action.lower()}",
-                        payload={"rep_p": rep_p})
+                        payload={"rep_p": rep_p,
+                                 "content_spec": {"concept": snap.code, "intervention": action}})
 
     if rep_p < 0.45:
         band, target, action = "easy", TARGET_P_EASY, Q_EASY

@@ -1,5 +1,5 @@
 ```
-# Python cache
+# Python
 __pycache__/
 *.pyc
 *.pyo
@@ -22,15 +22,12 @@ htmlcov/
 # Dependencies
 .venv/
 venv/
-.envrc
-.env.local
-.env.staging
-.env.production
+node_modules/
 
-# Build and distribution
+# Build artifacts
 dist/
 build/
-*.egg-info/
+target/
 
 # Editors
 .vscode/
@@ -38,7 +35,7 @@ build/
 *.swp
 *.swo
 
-# OS generated files
+# OS
 .DS_Store
 Thumbs.db
 ```
