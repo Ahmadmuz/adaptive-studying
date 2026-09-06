@@ -1,4 +1,41 @@
 ```
-# Python distribution artifacts
-*.egg-info/
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Testing
+.pytest_cache/
+.coverage
+coverage/
+htmlcov/
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+*.env.*
+
+# Dependencies
+.venv/
+venv/
+node_modules/
+
+# Build artifacts
+dist/
+build/
+target/
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
 ```

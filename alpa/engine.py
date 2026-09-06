@@ -38,7 +38,8 @@ from .db.models import (
 
 DIAGNOSTIC_BUDGET = 8
 CONTENT_PROVIDER = os.environ.get("ALPA_LLM_PROVIDER", "template:v1")
-TEACH_ACTIONS = ("EXPLAIN", "EXAMPLE", "SIMPLIFY", "BREAK_TASK")
+# Teach actions that generate content via LLM/provider
+TEACH_ACTIONS_DB = ("EXPLAIN", "EXAMPLE", "SIMPLIFY", "BREAK_TASK", "SUMMARY", "MINI_LESSON")
 
 
 # ---------------------------------------------------------------- helpers -----
@@ -232,7 +233,7 @@ def next_decision(db: Session, user: User, session: SessionRow, now: float | Non
 
     # Content generation hook: the ML engine decides WHAT/WHY (decision + spec),
     # the provider decides HOW. Spec and content are part of the logged decision.
-    if decision.intervention in TEACH_ACTIONS and decision.concept_id is not None:
+    if decision.intervention in TEACH_ACTIONS_DB and decision.concept_id is not None:
         from .content.provider import REGISTRY, GenerationSpec
         snap_c = snapshots[decision.concept_id]
         spec = GenerationSpec(

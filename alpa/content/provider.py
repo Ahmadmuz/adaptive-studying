@@ -47,6 +47,18 @@ class LLMProvider(ABC):
         """Returns a QuestionSpec-shaped dict (see alpa.content.questions)."""
 
     @abstractmethod
+    def generate_flashcard(self, spec: GenerationSpec) -> dict:
+        """Returns {front: str, back: str, concept: str}."""
+
+    @abstractmethod
+    def generate_summary(self, spec: GenerationSpec) -> str:
+        """Short summary of the concept for quick review."""
+
+    @abstractmethod
+    def generate_mini_lesson(self, spec: GenerationSpec) -> str:
+        """A mini-lesson / micro-teaching content."""
+
+    @abstractmethod
     def extract_concepts(self, text: str) -> list[dict]:
         """Concept PROPOSALS: [{name, description, confidence}],
         provenance-stamped by the caller."""
@@ -107,6 +119,25 @@ class TemplateProvider(LLMProvider):
 
     def extract_relationships(self, concepts: list[str], text: str) -> list[dict]:
         return []  # template provider proposes no edges: no fabricated structure
+
+    def generate_flashcard(self, spec: GenerationSpec) -> dict:
+        return {
+            "front": f"What is {spec.concept}?",
+            "back": f"{spec.concept}: key definition and properties.",
+            "concept": spec.concept,
+        }
+
+    def generate_summary(self, spec: GenerationSpec) -> str:
+        prereq = (f" Builds on: {', '.join(spec.prerequisites)}."
+                  if spec.prerequisites else "")
+        return (f"Summary of '{spec.concept}': core ideas at difficulty "
+                f"{spec.difficulty:.2f}.{prereq}")
+
+    def generate_mini_lesson(self, spec: GenerationSpec) -> str:
+        prereq = (f" Prerequisites: {', '.join(spec.prerequisites)}."
+                  if spec.prerequisites else "")
+        return (f"Mini-lesson on '{spec.concept}': structured overview covering "
+                f"key points at level {spec.difficulty:.2f}.{prereq}")
 
 
 class ProviderRegistry:
@@ -298,3 +329,35 @@ class HTTPChatProvider(LLMProvider):
         valid = set(concepts)
         return [r for r in rels
                 if isinstance(r, dict) and r.get("src") in valid and r.get("dst") in valid]
+
+    # ----------------------------------------------------- flashcard/summary/lesson
+    FLASHCARD_PROMPT = """Generate ONE flashcard. Reply with JSON only:
+{"front": string (a question or prompt), "back": string (the answer/explanation),
+ "concept": string}. The front should test recall of the concept."""
+
+    SUMMARY_PROMPT = """Write a concise summary (3-5 sentences) of the concept.
+Plain prose, no JSON."""
+
+    LESSON_PROMPT = """Write a mini-lesson (structured overview, ~150 words) on the concept.
+Include key points and relationships to prerequisites if relevant. Plain prose, no JSON."""
+
+    def generate_flashcard(self, spec: GenerationSpec) -> dict:
+        raw = self._chat(self.FLASHCARD_PROMPT, self._spec_block(spec) +
+                         f"\n\nConcept: {spec.concept}", want_json=True)
+        fc = parse_json_loose(raw)
+        if not isinstance(fc, dict) or "front" not in fc or "back" not in fc:
+            raise ProviderOutputError("flashcard payload missing front/back")
+        fc.setdefault("concept", spec.concept)
+        return fc
+
+    def generate_summary(self, spec: GenerationSpec) -> str:
+        return self._chat(
+            "You are a tutor writing concise summaries.",
+            self._spec_block(spec) +
+            f"\n\nWrite a short summary of '{spec.concept}' for quick review.").strip()
+
+    def generate_mini_lesson(self, spec: GenerationSpec) -> str:
+        return self._chat(
+            "You are a tutor writing structured mini-lessons.",
+            self._spec_block(spec) +
+            f"\n\nWrite a mini-lesson on '{spec.concept}' covering key points.").strip()
